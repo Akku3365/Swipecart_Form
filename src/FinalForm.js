@@ -1,55 +1,34 @@
 /** @format */
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import "./FinalForm.css";
 
-const FinalForm = ({ formDataList }) => {
-    console.log(formDataList);
+function FinalForm({ formdataList }) {
+    const [finalData, setFinalData] = useState([]);
+
+    useEffect(() => {
+        const formdataList = JSON.parse(localStorage.getItem("formdataList"));
+        setFinalData(formdataList);
+    }, []);
+
+    console.log(finalData);
+
     return (
-        <div>
-            {formDataList.map((formData, index) => {
-                // Extracting formName and fields data
-                const formName = Object.keys(formData)[0];
-                const fieldsData = formData[formName];
-
-                console.log("Form Name: ", formName);
-                {/* console.log(fieldsData[0][0]);
-                console.log(fieldsData[1][0]); */}
-                return (
-                    <div key={index}>
-                        <h2>{formName}</h2>
-                        <div key={fieldsData[1].id}>
-                            {fieldsData[0] === "text" && (
-                                <>
-                                    <p>{fieldsData[1].labelName}</p>
-                                    <label>
-                                        {fieldsData[1].fieldName}:
-                                        <input type="text" placeholder={fieldsData[1].placeholder} />
-                                    </label>
-                                </>
-                            )}
-                            {fieldsData[0] === "checkbox" && (
-                                <>
-                                    <label>{fieldsData[1].valueOne}</label>
-                                    <br />
-                                    <label>{fieldsData[1].valueTwo}:</label>
-                                    <input type="checkbox" />
-                                </>
-                            )}
-                            {fieldsData[0] === "file" && (
-                                <>
-                                    <label>{fieldsData[1].fileLableName}</label>
-                                    <br />
-                                    <input type="file" />
-                                </>
-                            )}
-                            {/* {fieldsData[0] === "text" && fieldsData[0] === "check"} */}
+        <>
+            <div className="container1">
+                <div className="final-form1">
+                    <h1>Your personal Forms List</h1>
+                    {finalData.map((data, index) => (
+                      <div key={index}>
+                            <h4 className="form-number1 mt-5">Form Number {index + 1}</h4>
+                            <h4 className="form-name1">Form Name : {data.formName}</h4>
+                            <button>Access</button>
                         </div>
-                        
-                    </div>
-                );
-            })}
-        </div>
+                    ))}
+                </div>
+            </div>
+        </>
     );
-};
+}
 
 export default FinalForm;

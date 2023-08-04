@@ -1,0 +1,79 @@
+/* CurrentForm.css */
+
+/* Add a container for the form */
+.current-form {
+  width: 30%;
+  padding: 20px;
+  position: fixed; /* Fixed positioning to keep the form at the top right corner */
+  top: 20px; /* Adjust top positioning as needed */
+  right: 20px; /* Adjust right positioning as needed */
+  background-color: #fff; /* Add a background color to the form container */
+  z-index: 100; /* Set a higher z-index to make sure the form is above other content */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a box shadow for a subtle effect */
+}
+
+/* Style the form header */
+.current-form h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Style the form container */
+.current-form form {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Style each form field */
+.current-form .form-field {
+  margin-bottom: 20px;
+}
+
+/* Style the field name */
+.current-form h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Style the field label */
+.current-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+/* Style the text input */
+.current-form input[type="text"],
+.current-form input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Style the checkbox container */
+.current-form .checkbox-container {
+  /* display: flex; */
+  /* align-items: center; */
+  margin-bottom: 5px;
+}
+
+/* Style the checkbox label */
+.current-form .checkbox-container .fs-4 {
+  margin-left: 20px;
+}
+
+/* Style the checkbox input */
+.current-form input[type="checkbox"] {
+  width: auto;
+  margin-right: 5px;
+}
+
+/* Optional: Add styles for file input button to make it look more consistent */
+.current-form input[type="file"] {
+  background-color: #f9f9f9;
+  cursor: pointer;
+}

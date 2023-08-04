@@ -5,12 +5,12 @@ import Popup from "./Popup";
 import TextPopup from "./TextPopup";
 import CheckboxPopup from "./CheckboxPopup";
 import FilePopup from "./FilePopup";
+import TempForm from "./TempForm";
+import CurrentForm from "./CurrentForm";
 // import FinalForm from "./FinalForm";
 
 const Welcome = () => {
     const userData = JSON.parse(localStorage.getItem("user"));
-
-    const [formDataList, setFormDataList] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [showTextPopup, setShowTextPopup] = useState(false);
     const [showCheckboxPopup, setShowCheckboxPopup] = useState(false);
@@ -23,7 +23,12 @@ const Welcome = () => {
         return storedFormNames ? Object.keys(JSON.parse(storedFormNames)) : [];
     });
 
+    // let init = {
+
+    // }
+
     // States for perform editing
+    // const [textEdit, setTextEdit] = useState(init);
     const [editingField, setEditingField] = useState(null);
     const [editCheckBox, setEditCheckBox] = useState(null);
     const [editFileBox, setEditFileBox] = useState(null);
@@ -31,6 +36,11 @@ const Welcome = () => {
     const [savedData, setSavedData] = useState([]);
     const [checkboxSavedData, setCheckboxSavedData] = useState([]);
     const [fileSavedData, setFileSavedData] = useState([]);
+
+    const [formDataList, setFormDataList] = useState(() => {
+        const storedFormDataList = JSON.parse(localStorage.getItem("formdataList") || "[]");
+        return storedFormDataList;
+    });
 
     const handleCreateForm = () => {
         setShowForm(true);
@@ -65,29 +75,58 @@ const Welcome = () => {
             alert("Form Name cannot be empty.");
             return; // Exit the function without saving data
         }
+
         // Check if the form name is unique
         if (!usedFormNames.includes(formName)) {
+            // Create a new form object to hold the form data
+            const newFormObject = {
+                formName: formName,
+                fields: [],
+            };
+
+            // Add the input fields data to the newFormObject's fields array
+            savedData.forEach((data) => {
+                const fieldObject = {
+                    fieldType: "text",
+                    labelName: data.labelName,
+                    fieldName: data.fieldName,
+                    placeholder: data.placeholder,
+                };
+                newFormObject.fields.push(fieldObject);
+            });
+
+            // Add the checkbox fields data to the newFormObject's fields array
+            checkboxSavedData.forEach((data) => {
+                const fieldObject = {
+                    fieldType: "checkbox",
+                    checkBoxLabel: data.checkBoxLabel,
+                    valueOne: data.valueOne,
+                    valueTwo: data.valueTwo,
+                };
+                newFormObject.fields.push(fieldObject);
+            });
+
+            // Add the file fields data to the newFormObject's fields array
+            fileSavedData.forEach((data) => {
+                const fieldObject = {
+                    fieldType: "file",
+                    fileLableName: data.fileLableName,
+                };
+                newFormObject.fields.push(fieldObject);
+            });
+
             // Update the list of used form names
             setUsedFormNames([...usedFormNames, formName]);
 
             // Save the current form data to localStorage
-            const formData = JSON.parse(localStorage.getItem("formdata") || "{}");
-            // Initialize the form data array for this formName if not already present
-            if (!formData[formName]) {
-                formData[formName] = [];
-            }
+            const formDataList = JSON.parse(localStorage.getItem("formdataList") || "[]");
+            formDataList.push(newFormObject);
 
-            // Push the new data to the existing form data for the corresponding formName
-            // console.log(savedData);
-            formData[formName].push(...savedData, ...checkboxSavedData, ...fileSavedData);
-            // Update the localStorage with the updated form data
-            localStorage.setItem("formdata", JSON.stringify(formData));
+            console.log(formDataList);
+            localStorage.setItem("formdataList", JSON.stringify(formDataList));
 
-            const newFormData = {
-                [formName]: [[fieldType], [...savedData], [checkboxSavedData], [fileSavedData]],
-            };
+            setFormDataList(formDataList);
 
-            setFormDataList([newFormData]);
             // Clear the savedData after form submission
             setCheckboxSavedData([]);
             setSavedData([]);
@@ -110,8 +149,8 @@ const Welcome = () => {
     };
 
     const handleEditField = (field) => {
-        console.log(field.labelName)
-        setEditingField(field);
+        const editField = savedData.find((item) => item.id === field.id);
+        setEditingField(editField);
         setShowTextPopup(true);
     };
 
@@ -127,8 +166,8 @@ const Welcome = () => {
     };
 
     const handleCheckBoxEdit = (field) => {
-        console.log(field)
-        setEditCheckBox(field);
+        const editField = checkboxSavedData.find((item) => item.id === field.id);
+        setEditCheckBox(editField);
         setShowCheckboxPopup(true);
     };
 
@@ -144,7 +183,7 @@ const Welcome = () => {
     };
 
     const handleFileBoxEdit = (field) => {
-        console.log(field)
+        console.log(field);
         setEditFileBox(field);
         setShowFilePopup(true);
     };
@@ -161,23 +200,19 @@ const Welcome = () => {
         setFileSavedData((prevSavedData) => prevSavedData.filter((data) => data.id !== id));
     };
 
-    const TextClose = () => {
-        setShowTextPopup(false);
-    }
-
     const CheckClose = () => {
         setShowCheckboxPopup(false);
-    }
+    };
 
     const FileClose = () => {
         setShowFilePopup(false);
-    }
+    };
 
     // console.log(formDataList)
     return (
         <div>
             {userData ? (
-                <div className="container">
+                <div>
                     <h2>
                         Hello Welcome to Swipecart Mr <span style={{ fontSize: "35px", color: "red" }}>{userData.username}</span>
                     </h2>
@@ -199,61 +234,20 @@ const Welcome = () => {
                             usedFormNames={usedFormNames} // Pass the usedFormNames to Popup component
                         />
                     )}
-                    {showTextPopup && <TextPopup TextClose={TextClose} onSubmitData={handlePopupSave} />}
+                    {showTextPopup && (
+                        <TextPopup
+                            TextClose={() => {
+                                setShowTextPopup(false);
+                                setEditingField(null);
+                            }}
+                            onSubmitData={handlePopupSave}
+                            editingField={editingField}
+                        />
+                    )}
                     {showCheckboxPopup && <CheckboxPopup CheckClose={CheckClose} OnSubmitCheckBox={checkBoxPopupSave} />}
                     {showFilePopup && <FilePopup FileClose={FileClose} OnSubmitFileBox={fileBoxPopupSave} />}
-                    <div style={{ textAlign: "center" }}>
-                        <div className="fs-4 mt-4">
-                            {savedData.map((data, index) => (
-                                <div key={index} className="mb-3">
-                                    <h4>{data.labelName}</h4>
-                                    <label>{data.fieldName} :</label>
-                                    <input type="text" placeholder={data.placeholder} />
-                                    <button className="btn btn-danger mx-1" onClick={() => handleDeleteTextField(data.id)}>
-                                        <i className="bi bi-trash"></i> Delete
-                                    </button>
-                                    <button className="btn btn-info mx-1" onClick={() => handleEditField(data)}>
-                                        <i className="bi bi-pencil"></i> Edit
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="fs-4 mt-4">
-                            {checkboxSavedData.map((data, index) => (
-                                <div key={index} className="mb-3">
-                                    <label>{data.valueOne}</label>
-                                    <br />
-                                    <label>
-                                        {data.valueTwo}
-                                        <input type="checkbox" />
-                                    </label>
-                                    <button className="btn btn-danger mx-1" onClick={() => handleDeleteCheckboxField(data.id)}>
-                                        <i className="bi bi-trash"></i> Delete
-                                    </button>
-                                    <button className="btn btn-info mx-1" onClick={() => handleCheckBoxEdit(data)}>
-                                        <i className="bi bi-pencil"></i> Edit
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="fs-4 mt-4">
-                            {fileSavedData.map((data, index) => (
-                                <div key={index} className="mb-3">
-                                    <label>{data.fileLableName}</label>
-                                    <br />
-                                    <input type="file" />
-                                    <button className="btn btn-danger mx-1" onClick={() => handleDeleteFileField(data.id)}>
-                                        <i className="bi bi-trash"></i> Delete
-                                    </button>
-                                    <button className="btn btn-info mx-1" onClick={() => handleFileBoxEdit(data)}>
-                                        <i className="bi bi-pencil"></i> Edit
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <TempForm savedData={savedData} checkboxSavedData={checkboxSavedData} fileSavedData={fileSavedData} handleDeleteTextField={handleDeleteTextField} handleEditField={handleEditField} handleDeleteCheckboxField={handleDeleteCheckboxField} handleCheckBoxEdit={handleCheckBoxEdit} handleDeleteFileField={handleDeleteFileField} handleFileBoxEdit={handleFileBoxEdit} />
+                    <CurrentForm formDataList={formDataList} />
                 </div>
             ) : (
                 <p>No user data available.</p>

@@ -32,7 +32,7 @@ function FilePopup({OnSubmitFileBox, FileClose}) {
      <form onSubmit={handleSubmit}>
       <label className="fs-4 mt-2">
           Enter File label Name:
-          <input type='text' value={fileLableName} onChange={(e) => setFileLableName(e.target.value)} />
+          <input type='text' placeholder='Enter File label Name' value={fileLableName} onChange={(e) => setFileLableName(e.target.value)} />
         </label>
         <br />
         <button className="btn btn-primary mt-4" type="submit">Submit</button>

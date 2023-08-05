@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import './Popup.css'
 
-function CheckboxPopup({ OnSubmitCheckBox, CheckClose, editingField }) {
+function CheckboxPopup({ OnSubmitCheckBox, CheckClose, editCheckBox }) {
     const [checkBoxLabel, setCheckBoxLabel] = useState("");
     const [valueOne, setValueOne] = useState("");
     const [valueTwo, setValueTwo] = useState("");
@@ -11,12 +11,12 @@ function CheckboxPopup({ OnSubmitCheckBox, CheckClose, editingField }) {
 
     useEffect(() => {
         // If editingField prop is provided, populate the form fields with its values
-        if (editingField) {
-          setCheckBoxLabel(editingField.checkBoxLabel);
-          setValueOne(editingField.valueOne);
-          setValueTwo(editingField.valueTwo);
+        if (editCheckBox) {
+          setCheckBoxLabel(editCheckBox.checkBoxLabel);
+          setValueOne(editCheckBox.valueOne);
+          setValueTwo(editCheckBox.valueTwo);
         }
-      }, [editingField]);
+      }, [editCheckBox]);
     
 
     const handleSubmit = (e) => {
@@ -28,7 +28,7 @@ function CheckboxPopup({ OnSubmitCheckBox, CheckClose, editingField }) {
         }
 
         const checkboxData = {
-            id: editingField ? editingField.id : Date.now(),
+            id: editCheckBox ? editCheckBox.id : Date.now(),
             checkBoxLabel,
             valueOne,
             valueTwo,

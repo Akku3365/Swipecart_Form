@@ -1,11 +1,17 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Popup.css'
 
 
-function FilePopup({OnSubmitFileBox, FileClose}) {
+function FilePopup({OnSubmitFileBox, FileClose, editFileBox}) {
 
   const [fileLableName, setFileLableName] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(()=> {
+    if(editFileBox) {
+      setFileLableName(editFileBox.fileLableName);
+    }
+  }, [editFileBox]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,7 +22,7 @@ function FilePopup({OnSubmitFileBox, FileClose}) {
     }
 
     const fileData = {
-        id: Date.now(),
+        id: editFileBox ? editFileBox.id : Date.now(),
         fileLableName
     }
     OnSubmitFileBox(fileData);

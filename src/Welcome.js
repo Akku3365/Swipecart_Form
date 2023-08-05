@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import Popup from "./Popup";
-import TextPopup from "./TextPopup";
-import CheckboxPopup from "./CheckboxPopup";
-import FilePopup from "./FilePopup";
+import TextPopup from "./Popup/TextPopup";
+import CheckboxPopup from "./Popup/CheckboxPopup";
+import FilePopup from "./Popup/FilePopup";
 import TempForm from "./TempForm";
 import CurrentForm from "./CurrentForm";
 // import FinalForm from "./FinalForm";
@@ -152,6 +152,8 @@ const Welcome = () => {
         const editField = savedData.find((item) => item.id === field.id);
         setEditingField(editField);
         setShowTextPopup(true);
+        setShowCheckboxPopup(false);
+        setShowFilePopup(false);
     };
 
     const checkBoxPopupSave = (checkData) => {
@@ -166,9 +168,11 @@ const Welcome = () => {
     };
 
     const handleCheckBoxEdit = (field) => {
-        const editField = checkboxSavedData.find((item) => item.id === field.id);
-        setEditCheckBox(editField);
+        const editCheckField = checkboxSavedData.find((item) => item.id === field.id);
+        setEditCheckBox(editCheckField);
         setShowCheckboxPopup(true);
+        setShowTextPopup(false);
+        setShowFilePopup(false);
     };
 
     const fileBoxPopupSave = (fileData) => {
@@ -186,6 +190,8 @@ const Welcome = () => {
         console.log(field);
         setEditFileBox(field);
         setShowFilePopup(true);
+        setShowCheckboxPopup(false);
+        setShowTextPopup(false);
     };
 
     const handleDeleteTextField = (id) => {
@@ -198,14 +204,6 @@ const Welcome = () => {
 
     const handleDeleteFileField = (id) => {
         setFileSavedData((prevSavedData) => prevSavedData.filter((data) => data.id !== id));
-    };
-
-    const CheckClose = () => {
-        setShowCheckboxPopup(false);
-    };
-
-    const FileClose = () => {
-        setShowFilePopup(false);
     };
 
     // console.log(formDataList)
@@ -244,8 +242,24 @@ const Welcome = () => {
                             editingField={editingField}
                         />
                     )}
-                    {showCheckboxPopup && <CheckboxPopup CheckClose={CheckClose} OnSubmitCheckBox={checkBoxPopupSave} />}
-                    {showFilePopup && <FilePopup FileClose={FileClose} OnSubmitFileBox={fileBoxPopupSave} />}
+                    {showCheckboxPopup && 
+                          <CheckboxPopup 
+                               CheckClose={() => {
+                                setShowCheckboxPopup(false);
+                                setEditCheckBox(null);
+                               }} 
+                                OnSubmitCheckBox={checkBoxPopupSave}
+                                editCheckBox={editCheckBox}
+                                />}
+                    {showFilePopup && 
+                          <FilePopup 
+                                FileClose={() => {
+                                    setShowFilePopup(false);
+                                    setEditFileBox(null);
+                                }}
+                                OnSubmitFileBox={fileBoxPopupSave}
+                                editFileBox={editFileBox}
+                                />}
                     <TempForm savedData={savedData} checkboxSavedData={checkboxSavedData} fileSavedData={fileSavedData} handleDeleteTextField={handleDeleteTextField} handleEditField={handleEditField} handleDeleteCheckboxField={handleDeleteCheckboxField} handleCheckBoxEdit={handleCheckBoxEdit} handleDeleteFileField={handleDeleteFileField} handleFileBoxEdit={handleFileBoxEdit} />
                     <CurrentForm formDataList={formDataList} />
                 </div>

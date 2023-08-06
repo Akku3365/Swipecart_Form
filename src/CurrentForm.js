@@ -25,16 +25,15 @@ const CurrentForm = ({ formDataList }) => {
                             </div>
                         )}
 
-                        {field.fieldType === "checkbox" && (
+{field.fieldType === "checkbox" && (
                             <div>
                                 <h4>{field.checkBoxLabel}</h4>
-                                <label className="fs-4">{field.valueOne}</label>
-                                <input type="checkbox" />
-                                <br/>
-                                <label className="fs-4" >{field.valueTwo}</label>
-                                {field.valueTwo && 
-                                <input type="checkbox"/>
-                                }
+                                {field.values.map((item, idx) => (
+                                    <div key={idx}>
+                                        <label className="fs-4">{item.value}</label>
+                                        <input type="checkbox" />
+                                    </div>
+                                ))}
                             </div>
                         )}
 

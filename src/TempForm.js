@@ -3,6 +3,7 @@
 import React from "react";
 
 const TempForm = ({ savedData, checkboxSavedData, fileSavedData, handleDeleteTextField, handleEditField, handleDeleteCheckboxField, handleCheckBoxEdit, handleDeleteFileField, handleFileBoxEdit }) => {
+    console.log(checkboxSavedData);
     return (
         <div style={{ textAlign: "center", width: "600px" }}>
             <div className="fs-4 mt-4">
@@ -26,17 +27,12 @@ const TempForm = ({ savedData, checkboxSavedData, fileSavedData, handleDeleteTex
                     <div key={index} className="mb-3">
                         <label className="fs-3">{data.checkBoxLabel}</label>
                         <br />
-                        <label>
-                            {data.valueOne}
-                            <input type="checkbox" />
-                        </label>
-                        <br />
-                        {data.valueTwo && (
-                            <label>
-                                {data.valueTwo}
+                        {data.values.map((item, idx) => (
+                            <label key={idx}>
+                                {item.value}
                                 <input type="checkbox" />
                             </label>
-                        )}
+                        ))}
                         <br />
                         <button className="btn btn-danger mx-1" onClick={() => handleDeleteCheckboxField(data.id)}>
                             Delete

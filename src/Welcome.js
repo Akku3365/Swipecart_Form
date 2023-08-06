@@ -100,8 +100,7 @@ const Welcome = () => {
                 const fieldObject = {
                     fieldType: "checkbox",
                     checkBoxLabel: data.checkBoxLabel,
-                    valueOne: data.valueOne,
-                    valueTwo: data.valueTwo,
+                    values: data.values.map((item) => ({ value: item.value })),
                 };
                 newFormObject.fields.push(fieldObject);
             });
@@ -157,6 +156,7 @@ const Welcome = () => {
     };
 
     const checkBoxPopupSave = (checkData) => {
+        console.log(checkData)
         if (editCheckBox) {
             const updatedCheckboxData = checkboxSavedData.map((item) => (item.id === editCheckBox.id ? checkData : item));
             setCheckboxSavedData(updatedCheckboxData);
